@@ -1,0 +1,2 @@
+DirectoryIndex views/dashboard.php
+ErrorDocument 404 /Laundry/includes/404.php
