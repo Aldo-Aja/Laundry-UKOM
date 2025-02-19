@@ -12,8 +12,8 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <h1 class="navbar-brand navbar-brand-autodark">
-      <a href=".">
-        <img src="./static/logo.svg" width="110" height="32" alt="Logo" class="navbar-brand-image">
+      <a href="../views/dashboard.php">
+        <img src="../assets/img/washify_hori.png" width="300px" height="100px" alt="Logo" class="navbar-brand-image">
       </a>
     </h1>
     <!-- Bagian user dan mode -->
