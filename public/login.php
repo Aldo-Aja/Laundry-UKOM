@@ -71,6 +71,7 @@ mysqli_close($conn);
       <div class="container container-tight py-4">
         <div class="card card-md">
           <div class="card-body">
+            <img src="../assets/img/washify_verti.png" alt="">
             <h2 class="h2 text-center mb-4">Silahkan Masuk </h2>
             <?php if (isset($error)): ?>
               <div class="alert alert-danger"><?php echo $error; ?></div>

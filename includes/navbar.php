@@ -96,8 +96,7 @@
                 <div class="dropdown-menu-column">
                   <a class="dropdown-item" href="outlet.php">Outlet</a>
                   <a class="dropdown-item" href="paket.php">Paket Cucian</a>
-                  <!-- Jika ada halaman tersendiri untuk data pelanggan, misalnya pelanggan.php -->
-                  <a class="dropdown-item" href="pelanggan.php">Data Pelanggan</a>
+                  <a class="dropdown-item" href="pengguna.php">Data Pengguna</a>
                 </div>
               </div>
             </div>
