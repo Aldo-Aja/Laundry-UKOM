@@ -13,6 +13,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $alamat = $_POST["alamat"];
         $tlp = $_POST["tlp"];
 
+        $checkStmt = $conn->prepare("SELECT id FROM tb_outlet WHERE nama = AND alamat = ? AND tlp = ?");
+        $checkStmt->bind_param("s", $username);
+        $checkStmt->execute();
+        $resultCheck = $checkStmt->get_result();
+
+        if ($resultCheck->num_rows > 0) {
+            echo json_encode([
+                "success" => false,
+                "error"   => "Outlet dengan Nama tersebut sudah ada."
+            ]);
+            exit();
+        }
+        $checkStmt->close();
+
         $stmt = $conn->prepare("INSERT INTO tb_outlet (nama, alamat, tlp) VALUES (?, ?, ?)");
         $stmt->bind_param("sss", $nama, $alamat, $tlp);
  

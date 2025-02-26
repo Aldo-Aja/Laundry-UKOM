@@ -15,6 +15,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $nama = $_POST["nama"];
         $role = $_POST["role"];
 
+        $checkStmt = $conn->prepare("SELECT id FROM tb_user WHERE username = ?");
+        $checkStmt->bind_param("s", $username);
+        $checkStmt->execute();
+        $resultCheck = $checkStmt->get_result();
+
+        if ($resultCheck->num_rows > 0) {
+            echo json_encode([
+                "success" => false,
+                "error"   => "User dengan username tersebut sudah ada."
+            ]);
+            exit();
+        }
+        $checkStmt->close();
+
         $stmt = $conn->prepare("INSERT INTO tb_user (id_outlet, username, password, nama, role) VALUES (?, ?, ?, ?, ?)");
         $stmt->bind_param("issss", $id_outlet, $username, $password, $nama, $role);
  
