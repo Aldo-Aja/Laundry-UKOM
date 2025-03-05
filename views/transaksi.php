@@ -128,6 +128,20 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
                           <option value="">Pilih Paket</option>
                         </select>
                       </div>
+                      <div class="mb-3">
+                        <label for="qty" class="form-label">Jumlah (Qty)</label>
+                        <input type="number" name="qty" id="qty" class="form-control" min="1" placeholder="Masukkan jumlah paket" required>
+                      </div>
+                      <!-- Diskon -->
+                      <div class="mb-3">
+                        <label for="diskon" class="form-label">Diskon (%)</label>
+                        <input type="number" name="diskon" id="diskon" class="form-control" min="0" max="100" placeholder="Masukkan diskon (0-100)">
+                      </div>
+                      <!-- Biaya Tambahan -->
+                      <div class="mb-3">
+                        <label for="biaya_tambahan" class="form-label">Biaya Tambahan (Rp)</label>
+                        <input type="number" name="biaya_tambahan" id="biaya_tambahan" class="form-control" min="0" placeholder="Masukkan biaya tambahan">
+                      </div>
                       <!-- Tanggal -->
                       <div class="mb-3">
                         <label for="tgl" class="form-label">Tanggal</label>
@@ -199,6 +213,22 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
                           <option value="">Pilih Paket</option>
                         </select>
                       </div>
+                      <!-- Jumlah (Qty) -->
+                      <div class="mb-3">
+                        <label for="edit_qty" class="form-label">Jumlah (Qty)</label>
+                        <input type="number" name="qty" id="edit_qty" class="form-control" min="1" placeholder="Masukkan jumlah paket" required>
+                      </div>
+                      <!-- Diskon -->
+                      <div class="mb-3">
+                        <label for="edit_diskon" class="form-label">Diskon (%)</label>
+                        <input type="number" name="diskon" id="edit_diskon" class="form-control" min="0" max="100" placeholder="Masukkan diskon (0-100)">
+                      </div>
+
+                      <!-- Biaya Tambahan -->
+                      <div class="mb-3">
+                        <label for="edit_biaya_tambahan" class="form-label">Biaya Tambahan (Rp)</label>
+                        <input type="number" name="biaya_tambahan" id="edit_biaya_tambahan" class="form-control" min="0" placeholder="Masukkan biaya tambahan">
+                      </div>
                       <!-- Tanggal -->
                       <div class="mb-3">
                         <label for="edit_tgl" class="form-label">Tanggal</label>
@@ -262,10 +292,6 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
     fetchOutletData();
     fetchMemberData();
     fetchPaketData();
-
-    // For Edit modal, load the select options for outlet, member, and paket as well
-    // You might choose to call these functions when edit modal is opened
-    // Alternatively, load once globally and reuse the options.
 
     // Submit form to add new transaksi
     $("#addTransaksiForm").submit(function (e) {

@@ -56,19 +56,27 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
                     <h3 class="card-title">Data Transaksi</h3>
                   </div>
                   <div class="card-body border-bottom py-3">
-                    <div class="d-flex">
+                    <div class="d-flex gap-3">
                     <a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" onclick="printLaporan()">
                       <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-printer"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" /><path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" /><path d="M7 13m0 2a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2z" /></svg>
-                      Cetak Laporan
+                      Print Laporan
                     </a>
-                      <div class="ms-auto text-secondary">
-                        Search:
-                        <div class="ms-2 d-inline-block">
-                          <input type="text" class="form-control form-control-sm" aria-label="Search invoice">
-                        </div>
-                      </div>
-                    </div>
+                    <a href="#" class="btn btn-danger btn-sm" onclick="exportToPDF()">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-file">
+                        <path d="M14 3v4a1 1 0 0 0 1 1h4"/>
+                        <path d="M16 21H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l5 5v11a2 2 0 0 1-2 2z"/>
+                      </svg>
+                      Export PDF
+                    </a>
+                    <a href="#" class="btn btn-success btn-sm" onclick="exportToExcel()">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-file">
+                        <path d="M14 3v4a1 1 0 0 0 1 1h4"/>
+                        <path d="M16 21H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l5 5v11a2 2 0 0 1-2 2z"/>
+                      </svg>
+                      Export Excel
+                    </a>
                   </div>
+                </div>
                   <div class="table-responsive">
                     <table class="table card-table table-vcenter text-nowrap datatable">
                       <thead class="table-light">
@@ -77,7 +85,7 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
                           <th>ID</th>
                           <th>Kode Invoice</th>
                           <th>Tanggal</th>
-                          <th>Dibayar</th>
+                          <th>Status Pembayaran</th>
                           <th>Total Price</th>
                         </tr>
                       </thead>
@@ -86,12 +94,6 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
                                 <td colspan="6">Memuat data...</td>
                             </tr>
                         </tbody>
-                        <!-- <tfoot>
-                            <tr>
-                                <th colspan="5">Total Keseluruhan</th>
-                                <th id="totalKeseluruhan"></th>
-                            </tr>
-                        </tfoot> -->
                     </table>
                   </div>
                 </div>
@@ -111,6 +113,13 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
   <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
   <!-- SweetAlert2 CDN -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- jsPDF untuk export PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+<!-- SheetJS untuk export Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 
   <script>
     function printLaporan() {
@@ -122,7 +131,74 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
         document.body.innerHTML = originalContent;
         location.reload(); 
     }
+    
+    function exportToPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
 
+      // Judul Laporan
+      doc.text("Laporan Transaksi", 14, 10);
+
+      // Ambil elemen tabel
+      doc.autoTable({
+          html: ".table",
+          startY: 20,
+          theme: "grid",
+          styles: { fontSize: 10 },
+          headStyles: { fillColor: [41, 128, 185] },
+          alternateRowStyles: { fillColor: [240, 240, 240] },
+      });
+
+      // Simpan sebagai file PDF
+      doc.save("Laporan_Transaksi.pdf");
+  }
+
+   function exportToExcel() {
+    let table = document.querySelector(".table");
+    let wb = XLSX.utils.book_new();
+    let ws = XLSX.utils.table_to_sheet(table);
+
+    let totalDibayar = 0;
+    let totalBelumDibayar = 0;
+    let totalKeseluruhan = 0;
+
+    let range = XLSX.utils.decode_range(ws["!ref"]);
+
+    for (let row = range.s.r + 1; row <= range.e.r; row++) {
+        let statusCell = ws[XLSX.utils.encode_cell({ r: row, c: 4 })]; // Status Pembayaran
+        let priceCell = ws[XLSX.utils.encode_cell({ r: row, c: 5 })]; // Total Price
+
+        if (statusCell && priceCell) {
+            let status = statusCell.v.trim(); // Pastikan tidak ada spasi ekstra
+            let priceStr = priceCell.v.replace(/[^\d,]/g, "").replace(",", "."); // Ambil angka dan konversi koma ke titik
+            let price = parseFloat(priceStr);
+
+            if (!isNaN(price)) {
+                totalKeseluruhan += price;
+                if (status === "Dibayar") {
+                    totalDibayar += price;
+                } else if (status === "Belum Dibayar") {
+                    totalBelumDibayar += price;
+                }
+            }
+        }
+    }
+
+    // Tambahkan total ke worksheet
+    let totalRow = range.e.r + 1;
+    ws[XLSX.utils.encode_cell({ r: totalRow, c: 4 })] = { v: "Sudah Dibayar", t: "s" };
+    ws[XLSX.utils.encode_cell({ r: totalRow, c: 5 })] = { v: `Rp ${totalDibayar.toLocaleString("id-ID")}`, t: "s" };
+
+    ws[XLSX.utils.encode_cell({ r: totalRow + 1, c: 4 })] = { v: "Belum Dibayar", t: "s" };
+    ws[XLSX.utils.encode_cell({ r: totalRow + 1, c: 5 })] = { v: `Rp ${totalBelumDibayar.toLocaleString("id-ID")}`, t: "s" };
+
+    ws[XLSX.utils.encode_cell({ r: totalRow + 2, c: 4 })] = { v: "Total Keseluruhan", t: "s" };
+    ws[XLSX.utils.encode_cell({ r: totalRow + 2, c: 5 })] = { v: `Rp ${totalKeseluruhan.toLocaleString("id-ID")}`, t: "s" };
+
+    // Simpan file
+    XLSX.utils.book_append_sheet(wb, ws, "Laporan");
+    XLSX.writeFile(wb, "Laporan_Transaksi.xlsx");
+}
     function formatRupiah(angka) {
         return new Intl.NumberFormat('id-ID', {
             style: 'currency',

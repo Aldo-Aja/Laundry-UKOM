@@ -9,36 +9,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Add a new pelanggan
     if ($action === "add") {
-        $nama = $_POST["nama"];
-        $alamat = $_POST["alamat"];
-        $tlp = $_POST["tlp"];
-
-        $checkStmt = $conn->prepare("SELECT id FROM tb_outlet WHERE nama = AND alamat = ? AND tlp = ?");
-        $checkStmt->bind_param("s", $username);
+        $nama   = isset($_POST["nama"]) ? trim($_POST["nama"]) : '';
+        $alamat = isset($_POST["alamat"]) ? trim($_POST["alamat"]) : '';
+        $tlp    = isset($_POST["tlp"]) ? trim($_POST["tlp"]) : '';
+    
+        if (empty($nama) || empty($alamat) || empty($tlp)) {
+            echo json_encode(["success" => false, "error" => "Semua kolom harus diisi"]);
+            exit();
+        }
+    
+        // Cek apakah outlet dengan nama, alamat, dan telepon yang sama sudah ada
+        $checkStmt = $conn->prepare("SELECT id FROM tb_outlet WHERE nama = ? AND alamat = ? AND tlp = ?");
+        if (!$checkStmt) {
+            echo json_encode(["success" => false, "error" => "Query error: " . $conn->error]);
+            exit();
+        }
+    
+        $checkStmt->bind_param("sss", $nama, $alamat, $tlp);
         $checkStmt->execute();
         $resultCheck = $checkStmt->get_result();
-
+    
         if ($resultCheck->num_rows > 0) {
-            echo json_encode([
-                "success" => false,
-                "error"   => "Outlet dengan Nama tersebut sudah ada."
-            ]);
+            echo json_encode(["success" => false, "error" => "Outlet dengan Nama tersebut sudah ada."]);
             exit();
         }
         $checkStmt->close();
-
+    
+        // Insert Data
         $stmt = $conn->prepare("INSERT INTO tb_outlet (nama, alamat, tlp) VALUES (?, ?, ?)");
+        if (!$stmt) {
+            echo json_encode(["success" => false, "error" => "Query error: " . $conn->error]);
+            exit();
+        }
+    
         $stmt->bind_param("sss", $nama, $alamat, $tlp);
- 
         if ($stmt->execute()) {
             echo json_encode(["success" => true, "message" => "Outlet berhasil ditambahkan"]);
         } else {
             echo json_encode(["success" => false, "error" => $conn->error]);
         }
-
         $stmt->close();
     }
-
+    
     // Delete a pelanggan
     if ($action === "delete") {
         $id = $_POST["id"] ?? null;

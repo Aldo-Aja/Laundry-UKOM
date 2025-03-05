@@ -150,8 +150,8 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
                         <input type="hidden" id="editPaketId" name="id">
                         <div class="mb-3">
                         <label for="id_outlet" class="form-label">Outlet</label>
-                        <select name="id_outlet" id="id_outlet" class="form-select" required>
-                        <option value="">Pilih Outlet</option>
+                        <select name="id_outlet" id="editIdOutlet" class="form-select" required>
+                          <option value="">Pilih Outlet</option>
                         </select>
                         </div>
                         <div class="mb-3">
@@ -205,37 +205,38 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
 $(document).ready(function () {
 
     function fetchOutletData() {
-        $.ajax({
-            url: "../controllers/fetchoutlet.php",
-            type: "GET",
-            dataType: "json",
-            success: function (response) {
-                if (response.success) {
-                    var outletSelect = $('#id_outlet');
-                    outletSelect.empty();
-                    outletSelect.append('<option value="">Pilih Outlet</option>');
-                    $.each(response.data, function (index, outlet) {
-                        outletSelect.append('<option value="' + outlet.id + '">' + outlet.nama + '</option>');
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal mengambil data outlet!',
-                        text: response.message,
-                        confirmButtonText: 'OK'
-                    });
-                }
-            },
-            error: function () {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Terjadi kesalahan saat mengambil data outlet. Silakan coba lagi.',
-                    confirmButtonText: 'OK'
-                });
-            }
-        });
-    }
+      $.ajax({
+          url: "../controllers/fetchoutlet.php",
+          type: "GET",
+          dataType: "json",
+          success: function (response) {
+              if (response.success) {
+                  var outletOptions = '<option value="">Pilih Outlet</option>';
+                  $.each(response.data, function (index, outlet) {
+                      outletOptions += '<option value="' + outlet.id + '">' + outlet.nama + '</option>';
+                  });
+                  // Update kedua dropdown
+                  $('#id_outlet, #editIdOutlet').html(outletOptions);
+              } else {
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'Gagal mengambil data outlet!',
+                      text: response.message,
+                      confirmButtonText: 'OK'
+                  });
+              }
+          },
+          error: function () {
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'Terjadi kesalahan saat mengambil data outlet. Silakan coba lagi.',
+                  confirmButtonText: 'OK'
+              });
+          }
+      });
+  }
+
 
     function fetchPaketData() {
         $.ajax({
@@ -412,7 +413,6 @@ $(document).ready(function () {
         });
     };
 });
-
   </script>
 
 

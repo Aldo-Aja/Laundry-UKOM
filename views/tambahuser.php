@@ -278,7 +278,7 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
                   $.ajax({
                       url: "../controllers/api.php",
                       type: "POST",
-                      data: { action: 'delete_pelanggan', id: id }, // Perbaikan di sini
+                      data: { action: 'delete', id: id }, // Perbaikan di sini
                       dataType: "json",
                       success: function (response) {
                           if (response.success) {
