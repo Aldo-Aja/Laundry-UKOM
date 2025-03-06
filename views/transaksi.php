@@ -109,7 +109,7 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
                         </select>
                       </div>
                       <!-- Member Select -->
-                      <div class="mb-3">
+                      <div class="mb-3">l
                         <label for="id_member" class="form-label">Member</label>
                         <select name="id_member" id="id_member" class="form-select" required>
                           <option value="">Pilih Member</option>
@@ -189,51 +189,50 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
                       <!-- Outlet Select -->
                       <div class="mb-3">
                         <label for="edit_id_outlet" class="form-label">Outlet</label>
-                        <select name="id_outlet" id="edit_id_outlet" class="form-select" required>
+                        <select name="id_outlet" id="edit_id_outlet" class="form-select" disabled>
                           <option value="">Pilih Outlet</option>
                         </select>
                       </div>
                       <!-- Member Select -->
                       <div class="mb-3">
                         <label for="edit_id_member" class="form-label">Member</label>
-                        <select name="id_member" id="edit_id_member" class="form-select" required>
+                        <select name="id_member" id="edit_id_member" class="form-select" disabled>
                           <option value="">Pilih Member</option>
                         </select>
                       </div>
-                      <!-- Paket Select (New Field for Editing) -->
+                      <!-- Paket Select -->
                       <div class="mb-3">
                         <label for="edit_id_paket" class="form-label">Paket</label>
-                        <select name="id_paket" id="edit_id_paket" class="form-select" required>
+                        <select name="id_paket" id="edit_id_paket" class="form-select" disabled>
                           <option value="">Pilih Paket</option>
                         </select>
                       </div>
                       <!-- Jumlah (Qty) -->
                       <div class="mb-3">
                         <label for="edit_qty" class="form-label">Jumlah (Qty)</label>
-                        <input type="number" name="qty" id="edit_qty" class="form-control" min="1" placeholder="Masukkan jumlah paket" required>
+                        <input type="number" name="qty" id="edit_qty" class="form-control" readonly>
                       </div>
                       <!-- Diskon -->
                       <div class="mb-3">
                         <label for="edit_diskon" class="form-label">Diskon (%)</label>
-                        <input type="number" name="diskon" id="edit_diskon" class="form-control" min="0" max="100" placeholder="Masukkan diskon (0-100)">
+                        <input type="number" name="diskon" id="edit_diskon" class="form-control" readonly>
                       </div>
-
                       <!-- Biaya Tambahan -->
                       <div class="mb-3">
                         <label for="edit_biaya_tambahan" class="form-label">Biaya Tambahan (Rp)</label>
-                        <input type="number" name="biaya_tambahan" id="edit_biaya_tambahan" class="form-control" min="0" placeholder="Masukkan biaya tambahan">
+                        <input type="number" name="biaya_tambahan" id="edit_biaya_tambahan" class="form-control" readonly>
                       </div>
                       <!-- Tanggal -->
                       <div class="mb-3">
                         <label for="edit_tgl" class="form-label">Tanggal</label>
-                        <input type="datetime-local" id="edit_tgl" name="tgl" class="form-control" required>
+                        <input type="datetime-local" id="edit_tgl" name="tgl" class="form-control" readonly>
                       </div>
                       <!-- Batas Waktu -->
                       <div class="mb-3">
                         <label for="edit_batas_waktu" class="form-label">Batas Waktu</label>
-                        <input type="datetime-local" id="edit_batas_waktu" name="batas_waktu" class="form-control" required>
+                        <input type="datetime-local" id="edit_batas_waktu" name="batas_waktu" class="form-control" readonly>
                       </div>
-                      <!-- Status -->
+                      <!-- Status (Bisa Diedit) -->
                       <div class="mb-3">
                         <label for="edit_status" class="form-label">Status</label>
                         <select id="edit_status" name="status" class="form-select" required>
@@ -244,7 +243,7 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
                           <option value="diambil">Diambil</option>
                         </select>
                       </div>
-                      <!-- Dibayar -->
+                      <!-- Dibayar (Bisa Diedit) -->
                       <div class="mb-3">
                         <label for="edit_dibayar" class="form-label">Dibayar</label>
                         <select id="edit_dibayar" name="dibayar" class="form-select" required>
@@ -574,7 +573,9 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
             $('#edit_id_outlet').val(transaksi.id_outlet);
             $('#edit_id_member').val(transaksi.id_member);
             $('#edit_id_paket').val(transaksi.id_paket);
-            // Convert datetime to "T" format for input datetime-local
+            $('#edit_qty').val(transaksi.jumlah_qty);
+            $('#edit_diskon').val(transaksi.diskon);
+            $('#edit_biaya_tambahan').val(transaksi.biaya_tambahan);
             $('#edit_tgl').val(transaksi.tgl.replace(' ', 'T'));
             $('#edit_batas_waktu').val(transaksi.batas_waktu.replace(' ', 'T'));
             $('#edit_status').val(transaksi.status);
