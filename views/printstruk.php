@@ -92,6 +92,7 @@ $total_harga = ($harga_total_paket + $biaya_tambahan - $diskon_nominal) + $pajak
 <body>
 <div class="container">
   <div class="invoice-box">
+    <img src="../assets/img/washify_hori.png" alt="" class="text-start" width="250 cm">
     <h2 class="text-center">Invoice</h2>
     <hr>
     <table class="table">

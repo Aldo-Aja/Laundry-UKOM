@@ -22,7 +22,7 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <title>Form elements - Tabler - Premium and Open Source dashboard template with responsive and high quality UI.</title>
+    <title>Paket</title>
     <!-- CSS files -->
     <link href="../assets/css/tabler.min.css?1692870487" rel="stylesheet"/>
     <link href="../assets/css/tabler-flags.min.css?1692870487" rel="stylesheet"/>
@@ -67,12 +67,6 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
                       </svg>
                       Tambah Paket
                     </a>
-                      <div class="ms-auto text-secondary">
-                        Search:
-                        <div class="ms-2 d-inline-block">
-                          <input type="text" class="form-control form-control-sm" aria-label="Search invoice">
-                        </div>
-                      </div>
                     </div>
                   </div>
                   <div class="table-responsive">
@@ -379,39 +373,87 @@ $(document).ready(function () {
     };
 
     window.editPaket = function(id) {
-        $.ajax({
-            url: "../controllers/fetchpaket.php",
-            type: "GET",
-            data: { id: id },
-            dataType: "json",
-            success: function (response) {
-                if (response.success) {
-                    const paket = response.data;
-                    $('#editPaketModal #editPaketId').val(paket.id);
-                    $('#editPaketModal #editIdOutlet').val(paket.id_outlet);
-                    $('#editPaketModal #editJenis').val(paket.jenis);
-                    $('#editPaketModal #editNamaPaket').val(paket.nama_paket);
-                    $('#editPaketModal #editHarga').val(paket.harga);
-                    $('#editPaketModal').modal('show');
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal mengambil data paket!',
-                        text: response.message,
-                        confirmButtonText: 'OK'
-                    });
-                }
-            },
-            error: function () {
+      $.ajax({
+          url: "../controllers/fetchpaket.php",
+          type: "GET",
+          data: { id: id },
+          dataType: "json",
+          success: function(response) {
+              if (response.success) {
+                  const paket = response.data;
+                  // Populate the modal with the current package data
+                  $('#editPaketModal #editPaketId').val(paket.id);
+                  $('#editPaketModal #editIdOutlet').val(paket.id_outlet);
+                  $('#editPaketModal #editJenis').val(paket.jenis);
+                  $('#editPaketModal #editNamaPaket').val(paket.nama_paket);
+                  $('#editPaketModal #editHarga').val(paket.harga);
+
+                  // Show the modal
+                  $('#editPaketModal').modal('show');
+              } else {
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'Gagal mengambil data paket!',
+                      text: response.message,
+                      confirmButtonText: 'OK'
+                  });
+              }
+          },
+          error: function() {
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'Terjadi kesalahan saat mengambil data paket. Silakan coba lagi.',
+                  confirmButtonText: 'OK'
+              });
+          }
+      });
+  };
+
+  $("#editPaketForm").submit(function (e) {
+    e.preventDefault();
+
+    // Send data to backend for updating the package
+    $.ajax({
+        url: "../controllers/apipaket.php",
+        type: "POST",
+        data: $(this).serialize() + "&action=edit", // Append the 'edit' action
+        dataType: "json",
+        success: function (response) {
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Paket berhasil diperbarui!',
+                    text: response.message,
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    // Close the modal and refresh data
+                    $('#editPaketModal').modal('hide');
+                    fetchPaketData();
+                });
+            } else {
                 Swal.fire({
                     icon: 'error',
-                    title: 'Error',
-                    text: 'Terjadi kesalahan saat mengambil data paket. Silakan coba lagi.',
+                    title: 'Oops...',
+                    text: "Error: " + response.error,
                     confirmButtonText: 'OK'
                 });
             }
-        });
-    };
+        },
+        error: function (xhr, status, error) {
+            console.log("XHR Response:", xhr.responseText); 
+            console.log("Status:", status);
+            console.log("Error:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'An error occurred while updating the data. Check console for details.',
+                confirmButtonText: 'OK'
+            });
+        }
+    });
+});
+
 });
   </script>
 

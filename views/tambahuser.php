@@ -22,7 +22,7 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <title>Form elements - Tabler - Premium and Open Source dashboard template with responsive and high quality UI.</title>
+    <title>Tambah User</title>
     <!-- CSS files -->
     <link href="../assets/css/tabler.min.css?1692870487" rel="stylesheet"/>
     <link href="../assets/css/tabler-flags.min.css?1692870487" rel="stylesheet"/>
@@ -67,12 +67,6 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
                       </svg>
                       Tambah Pelanggan
                     </a>
-                      <div class="ms-auto text-secondary">
-                        Search:
-                        <div class="ms-2 d-inline-block">
-                          <input type="text" class="form-control form-control-sm" aria-label="Search invoice">
-                        </div>
-                      </div>
                     </div>
                   </div>
                   <div class="table-responsive">

@@ -23,7 +23,7 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <title>Transaksi</title>
+    <title>Laporan Transaksi</title>
     <!-- CSS files -->
     <link href="../assets/css/tabler.min.css?1692870487" rel="stylesheet"/>
     <link href="../assets/css/tabler-flags.min.css?1692870487" rel="stylesheet"/>
@@ -155,50 +155,10 @@ if (!isset($_SESSION['user_id']) || empty($_SESSION['user_id'])) {
 
    function exportToExcel() {
     let table = document.querySelector(".table");
-    let wb = XLSX.utils.book_new();
-    let ws = XLSX.utils.table_to_sheet(table);
+    let wb = XLSX.utils.table_to_book(table, { sheet: "Laporan"});
 
-    let totalDibayar = 0;
-    let totalBelumDibayar = 0;
-    let totalKeseluruhan = 0;
-
-    let range = XLSX.utils.decode_range(ws["!ref"]);
-
-    for (let row = range.s.r + 1; row <= range.e.r; row++) {
-        let statusCell = ws[XLSX.utils.encode_cell({ r: row, c: 4 })]; // Status Pembayaran
-        let priceCell = ws[XLSX.utils.encode_cell({ r: row, c: 5 })]; // Total Price
-
-        if (statusCell && priceCell) {
-            let status = statusCell.v.trim(); // Pastikan tidak ada spasi ekstra
-            let priceStr = priceCell.v.replace(/[^\d,]/g, "").replace(",", "."); // Ambil angka dan konversi koma ke titik
-            let price = parseFloat(priceStr);
-
-            if (!isNaN(price)) {
-                totalKeseluruhan += price;
-                if (status === "Dibayar") {
-                    totalDibayar += price;
-                } else if (status === "Belum Dibayar") {
-                    totalBelumDibayar += price;
-                }
-            }
-        }
-    }
-
-    // Tambahkan total ke worksheet
-    let totalRow = range.e.r + 1;
-    ws[XLSX.utils.encode_cell({ r: totalRow, c: 4 })] = { v: "Sudah Dibayar", t: "s" };
-    ws[XLSX.utils.encode_cell({ r: totalRow, c: 5 })] = { v: `Rp ${totalDibayar.toLocaleString("id-ID")}`, t: "s" };
-
-    ws[XLSX.utils.encode_cell({ r: totalRow + 1, c: 4 })] = { v: "Belum Dibayar", t: "s" };
-    ws[XLSX.utils.encode_cell({ r: totalRow + 1, c: 5 })] = { v: `Rp ${totalBelumDibayar.toLocaleString("id-ID")}`, t: "s" };
-
-    ws[XLSX.utils.encode_cell({ r: totalRow + 2, c: 4 })] = { v: "Total Keseluruhan", t: "s" };
-    ws[XLSX.utils.encode_cell({ r: totalRow + 2, c: 5 })] = { v: `Rp ${totalKeseluruhan.toLocaleString("id-ID")}`, t: "s" };
-
-    // Simpan file
-    XLSX.utils.book_append_sheet(wb, ws, "Laporan");
-    XLSX.writeFile(wb, "Laporan_Transaksi.xlsx");
-}
+    XLSX.writeFile(wb, "Laporan_Transaksi.xlsx")
+  }
     function formatRupiah(angka) {
         return new Intl.NumberFormat('id-ID', {
             style: 'currency',

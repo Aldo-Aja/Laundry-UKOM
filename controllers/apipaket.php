@@ -59,22 +59,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $jenis = $_POST["jenis"];
         $nama_paket = $_POST["nama_paket"];
         $harga = $_POST["harga"];
-
-        if ($id) {
-            $stmt = $conn->prepare("UPDATE tb_paket SET id_outlet = ?, jenis = ?, nama_paket = ?, harga = ? WHERE id = ?");
-            $stmt->bind_param("issii", $id_outlet, $jenis, $nama_paket, $harga, $id);
-
-            if ($stmt->execute()) {
-                echo json_encode(["success" => true, "message" => "Paket berhasil diperbarui"]);
-            } else {
-                echo json_encode(["success" => false, "error" => $conn->error]);
-            }
-
-            $stmt->close();
-        } else {
-            echo json_encode(["success" => false, "error" => "ID tidak ditemukan"]);
+    
+        // Check if ID is present
+        if (!$id) {
+            echo json_encode(["success" => false, "error" => "ID paket tidak ditemukan"]);
+            exit();
         }
+    
+        // Check if any field is empty
+        if (empty($id_outlet) || empty($jenis) || empty($nama_paket) || empty($harga)) {
+            echo json_encode(["success" => false, "error" => "Semua field harus diisi"]);
+            exit();
+        }
+    
+        // Sanitize/validate harga as numeric
+        if (!is_numeric($harga)) {
+            echo json_encode(["success" => false, "error" => "Harga harus berupa angka"]);
+            exit();
+        }
+    
+        $stmt = $conn->prepare("UPDATE tb_paket SET id_outlet = ?, jenis = ?, nama_paket = ?, harga = ? WHERE id = ?");
+        $stmt->bind_param("issii", $id_outlet, $jenis, $nama_paket, $harga, $id);
+    
+        if ($stmt->execute()) {
+            echo json_encode(["success" => true, "message" => "Paket berhasil diperbarui"]);
+        } else {
+            echo json_encode(["success" => false, "error" => $conn->error]);
+        }
+    
+        $stmt->close();
     }
+    
 }
 $conn->close();
 ?>
